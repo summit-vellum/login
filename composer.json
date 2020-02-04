@@ -1,0 +1,26 @@
+{
+    "name": "quill/login",
+    "description": "login functionality",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "gien mangaliman",
+            "email": "gien.mangaliman@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Quill\\Login\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Quill\\Login\\LoginServiceProvider"
+            ]
+        }
+    }
+}
