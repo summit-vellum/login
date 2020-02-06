@@ -23,18 +23,13 @@ class LoginServiceProvider extends ServiceProvider
 
         LoginResource::observe(LoginObserver::class);
 
-        // $this->publishes([
-        //     __DIR__ . '/config/login.php' => config_path('login.php'),
-        // ], 'logins.config');
-
-        // $this->publishes([
-        //    __DIR__ . '/views' => resource_path('/vendor/login'),
-        // ], 'logins.views');
+        $this->publishes([
+           __DIR__ . '/app/User.php' => app_path('User.php'),
+        ], 'login.user');
 
         $this->publishes([
-        	__DIR__ . '/database/factories/LoginFactory.php' => database_path('factories/LoginFactory.php'),
-            __DIR__ . '/database/seeds/LoginTableSeeder.php' => database_path('seeds/LoginTableSeeder.php'),
-        ], 'logins.migration');
+           __DIR__ . '/Http/Controllers/Auth/LoginController.php' => app_path('Http/Controllers/Auth/LoginController.php'),
+        ], 'login.controller');
     }
 
     public function register()
@@ -47,7 +42,7 @@ class LoginServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                
+
             ]);
         }
     }
