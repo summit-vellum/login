@@ -1,5 +1,9 @@
+## Dependent on this package is quill/history.
+## https://github.com/centralization/quill-history/blob/master/README.md
+## Read the file on how to install
+
 ## Service Provider
-Register your provider on your `config/app.php`.
+Register this provider on your `config/app.php`.
 ```php
 'providers' => [
     ...,
