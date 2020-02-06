@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Storage;
 
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
@@ -54,6 +55,7 @@ class User extends Model implements AuthenticatableContract,
 
     public function policies()
     {
+    	Storage::disk('local')->put('policies.json', json_encode(session()->get('permissions')));
         $policiesString = file_get_contents(storage_path('app/policies.json'));
         $policies = json_decode($policiesString, true);
 

@@ -10,7 +10,9 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+    	"quill/history": "dev-master",
+    },
     "autoload": {
         "psr-4": {
             "Quill\\Login\\": "src/"
