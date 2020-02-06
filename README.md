@@ -20,9 +20,11 @@ php artisan vendor:publish --tag=login.controller --force
 
 
 ## In root's folder config/site.php (publish vellum.config if site.php does not exist)
-update main_module_slug field to set where uam login will redirect (e.g gallery)
+update main_module_slug field to set where uam login will redirect (e.g gallery).
+Make sure that your site_id has value as well
 ```php
- 'main_module_slug'	=> 'gallery'
+ 'main_module_slug'	=> 'gallery',
+ 'site_id' => 3
 ```
 
 
