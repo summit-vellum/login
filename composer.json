@@ -11,7 +11,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-    	"quill/history": "dev-master",
+    	"quill/history": "dev-master"
     },
     "autoload": {
         "psr-4": {
