@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+use Quill\History\Models\History;
+use Vellum\Module\Quill;
 use App\User;
 
 use Auth;
@@ -48,55 +50,9 @@ class LoginController extends Controller
         }
     }
 
-    public function login(Request $request)
+    public function login()
 	{
-		 $rules = array(
-            'username' => 'required',
-            'password' => 'required|alphaNum|min:3'
-        );
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return Redirect::to('/')
-                ->withErrors($validator)
-                ->withInput($request->except('password'));
-        } else {
-
-          // create our user data for the authentication
-            $userdata = array(
-                'username' => $request->get('username'),
-                'password' => $request->get('password'),
-            );
-
-            $userdataFallback = array(
-                'username' => $request->get('username'),
-                'password' => md5($request->get('password')),
-            );
-
-            $user = \App\User::firstOrNew($userdataFallback);
-
-            // attempt to do the login
-            if (Auth::attempt($userdata)) {
-                //activity log here
-
-                return Redirect::to('article');
-            } elseif ($user->exists) {
-
-                $user->password = Hash::make($userdata['password']);
-                $user->save();
-
-                //activity log here//activity log here
-
-                Auth::login($user);
-
-                return Redirect::to('article');
-            } else {
-
-                // validation not successful, send back to form
-                return Redirect::to('/')->with('message', 'Username or password is not correct.');
-            }
-        }
+        return Redirect::to('/');
 	}
 
 	public function logout()
@@ -112,10 +68,9 @@ class LoginController extends Controller
     	$website = $request->input('website');
     	$crossToken = $request->input('token');
 
-
     	// since http server communication such as file_get_contents and curl is not working on local
         // connect to staging site of uam to get the permissions
-        $uamUrl = str_replace('local', 'staging', env('UAM_URL'));
+        $uamUrl = str_replace('local', 'beta', env('UAM_URL'));
         $uamUrl = str_replace(':8000', '', $uamUrl);
 
         if (env('APP_ENV') != 'local') {
@@ -128,10 +83,20 @@ class LoginController extends Controller
         	$auth = Auth::loginUsingId($userId);
 
         	if ($auth) {
-        		//Insert logging in to activity logs
+
+        		$historyDetails = [
+        			'user_id' => $userId,
+        			'activity_code' => 'ULI',
+        			'historyable_id' => $userId,
+        			'historyable_type' => 'App\User',
+        			'history_details' => serialize($userData->getAttributes())
+        		];
+
+        		History::create($historyDetails);
+
         		session()->put('cross_token', $crossToken);
 
-        		$permissionUrl = $uamUrl."/permissions/{$userId}/{$this->site['site_id']}?platform=Quill";
+        		$permissionUrl = $uamUrl."/permissions/{$userId}/{$this->site['site_id']}?platform=Quill&fromVellum=1";
 
         		$contextOptions = [];
 
@@ -154,12 +119,27 @@ class LoginController extends Controller
 
                 session()->put('is_admin', $userPermissions['user']['is_admin']);
 
-                if (!$userPermissions['user']['is_admin'] && $userPermissions['permissions']) {
-                    session()->put('permissions', $userPermissions['permissions']);
+                $modulePermissions = [];
+                $modules = array_column(event(Quill::MODULE), 'module');
+                if (!$userPermissions['user']['is_admin'] && isset($userPermissions['permissions']) && $userPermissions['permissions']) {
+                	foreach ($userPermissions['permissions'] as $key => $permission) {
+                		if (in_array($key, $modules)) {
+                			array_walk($permission, function(&$value){
+                				$value = strtolower($value);
+                			});
+                			$modulePermissions[strtolower($key)] = $permission;
+                		}
+                	}
+
+                } else if ($userPermissions['user']['is_admin']) {
+                	foreach ($modules as $module) {
+                		$modulePermissions[strtolower($module)] = ["*"];
+                	}
                 }
 
-                session()->put('is_manager', $userPermissions['user']['is_manager_website']);
+                session()->put('permissions', $modulePermissions);
 
+                session()->put('is_manager', $userPermissions['user']['is_manager_website']);
 
                 return redirect()->to($this->site['main_module_slug']);
         	}
