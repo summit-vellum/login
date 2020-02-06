@@ -1,6 +1,6 @@
-## Dependent on this package is quill/history.
-## https://github.com/centralization/quill-history/blob/master/README.md
-## Read the file on how to install
+## Dependent on this package is quill/history. (already included in composer.json)
+## How to make it work: https://github.com/centralization/quill-history/blob/master/README.md
+
 
 ## Service Provider
 Register this provider on your `config/app.php`.
@@ -11,11 +11,13 @@ Register this provider on your `config/app.php`.
 ]
 ```
 
+
 ## Force publish User.php and LogInController.php
 ```php
 php artisan vendor:publish --tag=login.user --force
 php artisan vendor:publish --tag=login.controller --force
 ```
+
 
 ## In root's folder config/site.php (publish vellum.config if site.php does not exist)
 update main_module_slug field to set where uam login will redirect (e.g gallery)
@@ -23,7 +25,9 @@ update main_module_slug field to set where uam login will redirect (e.g gallery)
  'main_module_slug'	=> 'gallery'
 ```
 
+
 ## Remove or comment out Auth::routes(); in routes/web.php
+
 
 
 ## Add these to routes/web.php
@@ -34,6 +38,7 @@ Route::post('/login', 'Auth\LoginController@login');
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/auth', 'Auth\LoginController@authenticate');
 ```
+
 
 ## Update config/database.php
 ```php
@@ -61,9 +66,7 @@ return['cosmo'];
 
 
 ## Adding Module & Module's Permission
-
-
-## Under Register{Module}Module.php add permissions (name & description) and module's description
+Under Register{Module}Module.php add permissions (name & description) and module's description
 See example below
 ```php
 'permissions' => [
