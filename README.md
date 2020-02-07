@@ -36,7 +36,7 @@ Make sure that your site_id has value as well
 ```php
 Route::get('/', 'Auth\LoginController@index');
 Route::get('/login', 'Auth\LoginController@login');
-Route::post('/login', 'Auth\LoginController@login');
+Route::post('/login', ['as' => 'login', 'uses' => 'Auth\LoginController@login']);
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/auth', 'Auth\LoginController@authenticate');
 ```
