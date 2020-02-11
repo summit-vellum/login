@@ -39,6 +39,8 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->site = config('site');
+        $historyConfig = config('history');
+        $this->activity_code = $historyConfig['activity_code'];
     }
 
     public function index()
@@ -59,7 +61,7 @@ class LoginController extends Controller
 	{
 		$historyDetails = [
 			'user_id' => Auth::user()->id,
-			'activity_code' => 'ULO',
+			'activity_code' => $this->activity_code['logged_out'],
 			'historyable_id' => Auth::user()->id,
 			'historyable_type' => 'App\User',
 			'history_details' => serialize(Auth::user()->getAttributes())
@@ -95,7 +97,7 @@ class LoginController extends Controller
 
         		$historyDetails = [
         			'user_id' => $userId,
-        			'activity_code' => 'ULI',
+        			'activity_code' => $this->activity_code['logged_in'],
         			'historyable_id' => $userId,
         			'historyable_type' => 'App\User',
         			'history_details' => serialize($userData->getAttributes())
