@@ -57,6 +57,15 @@ class LoginController extends Controller
 
 	public function logout()
 	{
+		$historyDetails = [
+			'user_id' => Auth::user()->id,
+			'activity_code' => 'ULO',
+			'historyable_id' => Auth::user()->id,
+			'historyable_type' => 'App\User',
+			'history_details' => serialize(Auth::user()->getAttributes())
+		];
+		History::create($historyDetails);
+
 		session()->flush();
         Auth::logout(); // log the user out of our application
         return Redirect::to('/login'); // redirect the user to the login screen
