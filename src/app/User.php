@@ -46,12 +46,17 @@ class User extends Model implements AuthenticatableContract,
 	 */
 	protected $hidden = [];
 
-    /**
+	/**
      * The attributes added from the model's JSON form.
      *
      * @var array
      */
-    protected $appends = ['username'];
+    protected $appends = ['name'];
+
+    public function getNameAttribute()
+    {
+        return $this->first_name;
+    }
 
     public function policies()
     {
