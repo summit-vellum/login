@@ -55,7 +55,7 @@ class User extends Model implements AuthenticatableContract,
 
     public function getNameAttribute()
     {
-        return $this->first_name;
+        return $this->display_name;
     }
 
     public function policies()
