@@ -111,7 +111,7 @@ class LoginController extends Controller
 
         		$contextOptions = [];
 
-        		if (env('APP_ENV') == 'local') {
+        		if (env('APP_ENV') == 'local' || env('APP_ENV') == 'staging') {
         			//remove this pag na push na sa stgquill.cosmo.summitmedia-digital.com.ph check if mag working
 	        		$contextOptions = [
 				       'ssl' => [
